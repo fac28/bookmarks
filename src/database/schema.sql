@@ -1,11 +1,29 @@
+PRAGMA foreign_keys = ON;
+
 BEGIN;
 
-CREATE TABLE IF NOT EXISTS tasks (
+CREATE TABLE IF NOT EXISTS users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  content TEXT,
-  -- SQLite doesn't have proper booleans, so we use 0 or 1
-  complete INTEGER DEFAULT 0 CHECK (complete IN (0, 1)),
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
-) STRICT;
+  email TEXT UNIQUE,
+  hash TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+  id TEXT PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id),
+  expires_at DATETIME NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS books (
+  book_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER REFERENCES users(id),
+  title TEXT,
+  author TEXT,
+  review TEXT,
+  rating INTEGER,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
 COMMIT;
